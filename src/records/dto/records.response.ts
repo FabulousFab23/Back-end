@@ -41,6 +41,26 @@ export class RecordsResponse {
   @ApiProperty({ example: "😎" })
   emoji: string;
 
+  @ApiProperty({ example: 2 })
+  colorType: number;
+
+  @ApiProperty({ example: 2 })
+  likesCount: number;
+
+  @ApiProperty({ example: new Date() })
+  createdAt: Date;
+
   @ApiProperty({type: [RecordAnswersResponse]})
   answers: RecordAnswersResponse[];
+
+  user: {
+    id: string,
+    pseudo: string,
+    avatar: string,
+  };
+
+  file: {
+    id: string;
+    link: string;
+  }
 }

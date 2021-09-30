@@ -23,7 +23,7 @@ export class ActionsService {
   ) {
   }
 
-  async answerToRecord(user, record, buffer, filename) {
+  async answerToRecord(user, record, duration, buffer, filename) {
     const findRecord = await this.recordsRepository.findOne({ where: { id: record } });
     if (!findRecord) {
       throw new NotFoundException();
@@ -31,7 +31,8 @@ export class ActionsService {
     const uploadFile = await this.filesService.uploadPublic(buffer, filename);
     const entity = new AnswersEntity();
     entity.record = findRecord;
-    entity.answerFile = uploadFile;
+    entity.duration = duration;
+    entity.file = uploadFile;
     entity.createdAt = new Date();
     entity.user = user;
     return this.answersRepository.save(entity);
@@ -58,12 +59,6 @@ export class ActionsService {
     like.record = record;
     like.type = LikeTypeEnum.RECORD;
     await this.recordsRepository.update(record.id, {likesCount: record.likesCount + 1 })
-    // await this.recordsRepository
-    //   .createQueryBuilder("record")
-    //   .update(RecordsEntity)
-    //   .set({ likesCount: () => 'likesCount + 1' })
-    //   .where({id: record.id})
-    //   .execute();
     await this.likesRepository
       .createQueryBuilder()
       .insert()
@@ -93,11 +88,7 @@ export class ActionsService {
     like.user = await this.usersRepository.findOne({ where: { id: userId } });
     like.answer = answer;
     like.type = LikeTypeEnum.ANSWER;
-    // await this.answersRepository
-    //   .createQueryBuilder()
-    //   .update(AnswersEntity)
-    //   .set({ likesCount: () => "likesCount + 1" })
-    //   .execute();
+    await this.answersRepository.update(answer.id, {likesCount: answer.likesCount + 1 })
     await this.likesRepository
       .createQueryBuilder()
       .insert()

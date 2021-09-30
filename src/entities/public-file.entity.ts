@@ -20,7 +20,7 @@ export class PublicFileEntity {
   @OneToOne(type => RecordsEntity, record => record.file)
   record: RecordsEntity;
 
-  @OneToOne(type => AnswersEntity, answer => answer.answerFile)
+  @OneToOne(type => AnswersEntity, answer => answer.file)
   answer: AnswersEntity;
 
 }

@@ -71,7 +71,6 @@ export class UsersEntity {
   })
   updatedAt: Date;
 
-  @JoinColumn()
   @OneToOne(
     () => PublicFileEntity,
     {
@@ -79,6 +78,7 @@ export class UsersEntity {
       nullable: true
     }
   )
+  @JoinColumn()
   public avatar?: PublicFileEntity;
 
   @OneToMany(type => RecordsEntity, records => records.user)

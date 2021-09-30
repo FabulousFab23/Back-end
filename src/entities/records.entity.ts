@@ -25,6 +25,9 @@ export class RecordsEntity {
   @Column({ nullable: true })
   emoji: string;
 
+  @Column({ nullable: true })
+  duration: number;
+
   @Column({ nullable: true , default: 0})
   likesCount: number
 

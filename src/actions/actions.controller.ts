@@ -35,7 +35,7 @@ export class ActionsController {
     @Body() body: FileDto
   ) {
     const user = req.user;
-    return this.actionsService.answerToRecord(user, record, file.buffer, file.originalname)
+    return this.actionsService.answerToRecord(user, record, body.duration, file.buffer, file.originalname)
       .then((data) => res.json(data))
       .catch((e) => res.sendStatus(400))
   }

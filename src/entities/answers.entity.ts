@@ -18,6 +18,9 @@ export class AnswersEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Column({ nullable: true })
+  duration: number;
+
   @Column({ nullable: true, default: 0 })
   likesCount: number;
 
@@ -28,8 +31,8 @@ export class AnswersEntity {
   createdAt: Date;
 
   @JoinColumn()
-  @OneToOne(type => PublicFileEntity, answerFile => answerFile.answer) //todo remove from bucket
-  answerFile: PublicFileEntity;
+  @OneToOne(type => PublicFileEntity, file => file.answer) //todo remove from bucket
+  file: PublicFileEntity;
 
   @ManyToOne(type => UsersEntity, user => user.answers, { onDelete: "CASCADE", cascade: true })
   user: UsersEntity;
