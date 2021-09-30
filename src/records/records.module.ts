@@ -7,6 +7,8 @@ import { FileService } from "../files/file.service";
 import { UsersService } from "../users/users.service";
 import { PublicFileEntity } from "../entities/public-file.entity";
 import { UsersEntity } from "../entities/users.entity";
+import { AnswersEntity } from "../entities/answers.entity";
+import { LikesEntity } from "../entities/llikes.entity";
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { UsersEntity } from "../entities/users.entity";
       [
         RecordsEntity,
         PublicFileEntity,
-        UsersEntity
+        UsersEntity,
+        AnswersEntity,
+        LikesEntity,
       ])
   ],
   providers: [RecordsService, FileService, UsersService],

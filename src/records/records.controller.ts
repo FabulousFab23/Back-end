@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Logger, ParseIntPipe,
+  Logger, Param,
   Post, Query,
   Req,
   Res,
@@ -11,11 +11,10 @@ import {
   UseInterceptors
 } from "@nestjs/common";
 import { RecordsService } from "./records.service";
-import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { RecordDto } from "./dto/record.dto";
-import { PaginationQueryDto } from "../lib/dto/pagination.query.dto";
-import { RecordsResponse } from "./dto/records.response";
+import { RecordAnswersResponse, RecordsResponse } from "./dto/records.response";
 import { Order } from "../lib/enum";
 
 @Controller("records")
@@ -41,6 +40,26 @@ export class RecordsController {
   ) {
     const user = req.user;
     return this.recordsService.getRecordsByUser(page, limit, order, user) //todo add friend records
+      .then((data) => res.json(data))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: [RecordAnswersResponse] })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: "Responses" })
+  @ApiParam({ name: 'id', required: true, type: String, description: 'id of record'})
+  @ApiQuery({ name: 'page', required: true, type: Number, example: 1})
+  @ApiQuery({ name: 'limit', required: true, type: Number, example: 10})
+  @ApiQuery({ name: 'order', required: true, enum: Order})
+  @Get(":id/answers")
+  getAnswersByRecord(
+    @Req() req,
+    @Res() res,
+    @Param('id') id: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('order') order: Order
+  ) {
+    return this.recordsService.getAnswersByRecord(id, page, limit, order)
       .then((data) => res.json(data))
       .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
