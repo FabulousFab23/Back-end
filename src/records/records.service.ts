@@ -38,7 +38,7 @@ export class RecordsService {
     const [getRecordCount, getAnswerCount] = await Promise.all([getRecordQuery, getAnswerQuery]);
     return {
       todayRecordCount: Number(getRecordCount),
-      leftRecordCount: Number(getRecordCount) ? this.recordLimit - Number(getRecordCount) : 0,
+      leftRecordCount: Number(getRecordCount) ? this.recordLimit - Number(getRecordCount) : this.recordLimit,
       answerCount: Number(getAnswerCount)
     };
   }
