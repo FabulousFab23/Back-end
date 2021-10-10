@@ -3,13 +3,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UsersEntity } from "../entities/users.entity";
 import { Repository } from "typeorm";
 import { GeneratorUtil } from "../lib/generator-util";
-import { FileService } from "../files/file.service";
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersEntity) private usersRepository: Repository<UsersEntity>,
-    private readonly filesService: FileService
   ) {
   }
 
@@ -59,6 +57,9 @@ export class UsersService {
       .execute();
   }
 
+  async updateAvatar(userId, entity) {
+    return this.usersRepository.update(userId, entity)
+  }
 
   async getById(id: string) {
     const user = await this.usersRepository.findOne({ id });
@@ -66,16 +67,6 @@ export class UsersService {
       return user;
     }
     throw new HttpException("User with this id does not exist", HttpStatus.NOT_FOUND);
-  }
-
-  async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
-    const avatar = await this.filesService.uploadPublic(imageBuffer, filename);
-    const user = await this.getById(userId);
-    await this.usersRepository.update(userId, {
-      ...user,
-      avatar
-    });
-    return avatar;
   }
 
   findById(id: string) {

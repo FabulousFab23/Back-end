@@ -39,7 +39,7 @@ export class RecordsController {
     @Query('order') order: Order
   ) {
     const user = req.user;
-    return this.recordsService.getRecordsByUser(page, limit, order, user) //todo add friend records
+    return this.recordsService.getRecordsByUser(user.id, page, limit, order, user) //todo add friend records
       .then((data) => res.json(data))
       .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
@@ -59,7 +59,8 @@ export class RecordsController {
     @Query('limit') limit: number,
     @Query('order') order: Order
   ) {
-    return this.recordsService.getAnswersByRecord(id, page, limit, order)
+    const user = req.user;
+    return this.recordsService.getAnswersByRecord(id, page, limit, order, user)
       .then((data) => res.json(data))
       .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
@@ -91,7 +92,8 @@ export class RecordsController {
     @Query('limit') limit: number,
     @Query('order') order: Order
   ) {
-    return this.recordsService.getRecordsByUser(page, limit, order)
+    const { id } = req.user;
+    return this.recordsService.getRecordsByUser(id, page, limit, order)
       .then((data) => res.json(data))
       .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }

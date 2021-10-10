@@ -1,6 +1,15 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from "typeorm";
 import { UsersEntity } from "./users.entity";
 import { FriendsStatusEnum } from "../lib/enum";
+import { NotificationsEntity } from "./notification.entity";
 
 @Entity({name: 'friends'})
 export class FriendsEntity {
@@ -12,6 +21,9 @@ export class FriendsEntity {
 
   @ManyToOne(() => UsersEntity, (user) => user.to, { onDelete: "CASCADE" })
   friend: UsersEntity;
+
+  @OneToMany(() => NotificationsEntity, (notification) => notification.friend)
+  notification: NotificationsEntity;
 
   @Column({
     nullable: true,

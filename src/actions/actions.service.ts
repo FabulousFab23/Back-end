@@ -7,7 +7,7 @@ import { RecordsEntity } from "../entities/records.entity";
 import { FileService } from "../files/file.service";
 import { UsersEntity } from "../entities/users.entity";
 import { FriendsEntity } from "../entities/friends.entity";
-import { FriendsStatusEnum } from "../lib/enum";
+import { FileTypeEnum, FriendsStatusEnum } from "../lib/enum";
 import { CountryEntity } from "../entities/countries.entity";
 
 @Injectable()
@@ -24,11 +24,24 @@ export class ActionsService {
   }
 
   async answerToRecord(user, record, duration, buffer, filename) {
-    const findRecord = await this.recordsRepository.findOne({ where: { id: record } });
+    const findRecord = await this.recordsRepository.createQueryBuilder('record')
+      .where({ id: record })
+      .leftJoin('record.answers', 'answers')
+      .leftJoin('answers.user', 'user')
+      .select([
+        'record.id',
+        'answers.id',
+        'user.id',
+      ])
+      .getOne()
     if (!findRecord) {
       throw new NotFoundException();
     }
-    const uploadFile = await this.filesService.uploadPublic(buffer, filename);
+    const userAnswers = findRecord.answers.filter((el) => el.user.id === user.id)
+    if (userAnswers.length) {
+      throw new BadRequestException('you already answered')
+    }
+    const uploadFile = await this.filesService.uploadFile(buffer, filename, FileTypeEnum.AUDIO);
     const entity = new AnswersEntity();
     entity.record = findRecord;
     entity.duration = duration;
@@ -96,6 +109,46 @@ export class ActionsService {
       .values(like)
       .execute();
     return like;
+  }
+
+  async unLikeRecord(userId: string, recordId: string) {
+    const record = await this.recordsRepository.findOne({ where: { id: recordId } });
+    if (!record) {
+      throw new NotFoundException();
+    }
+
+    const existingLike = await this.likesRepository.findOne({
+        where: {
+          user: userId,
+          record: recordId
+        }
+      }
+    );
+    if (!existingLike) {
+      throw new BadRequestException("like not found");
+    }
+    await this.recordsRepository.update(record.id, {likesCount: record.likesCount - 1 })
+    return this.likesRepository.delete(existingLike.id)
+  }
+
+  async unLikeAnswer(userId: string, answerId: string) {
+    const answer = await this.answersRepository.findOne({ where: { id: answerId } });
+    if (!answer) {
+      throw new NotFoundException();
+    }
+
+    const existingLike = await this.likesRepository.findOne({
+        where: {
+          user: userId,
+          answer: answerId
+        }
+      }
+    );
+    if (!existingLike) {
+      throw new BadRequestException("like not found");
+    }
+    await this.answersRepository.update(answer.id, {likesCount: answer.likesCount - 1 })
+    return this.likesRepository.delete(existingLike.id)
   }
 
   async addFriend(userId, friendId) {

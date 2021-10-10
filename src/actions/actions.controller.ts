@@ -1,7 +1,7 @@
 import {
   Body,
   Controller, Delete, Get,
-  HttpStatus,
+  HttpStatus, Logger,
   Param,
   Post,
   Query,
@@ -19,6 +19,7 @@ import { FileDto } from "../users/dto/file.dto";
 @ApiBearerAuth()
 @ApiTags('actions')
 export class ActionsController {
+  private readonly logger = new Logger(ActionsController.name);
   constructor(private actionsService: ActionsService) {
   }
 
@@ -37,7 +38,7 @@ export class ActionsController {
     const user = req.user;
     return this.actionsService.answerToRecord(user, record, body.duration, file.buffer, file.originalname)
       .then((data) => res.json(data))
-      .catch((e) => res.sendStatus(400))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
   @Post('answer/:id/like')
@@ -50,7 +51,7 @@ export class ActionsController {
     const user = req.user;
     return this.actionsService.likeAnswer(user.id, answerId)
       .then((data) => res.json(data))
-      .catch((e) => res.sendStatus(400))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
   @Post('record/:id/like')
@@ -63,7 +64,33 @@ export class ActionsController {
     const user = req.user;
     return this.actionsService.likeRecord(user.id, recordId)
       .then((data) => res.json(data))
-      .catch((e) => res.sendStatus(400))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
+  }
+
+  @Post('answer/:id/unlike')
+  @ApiParam({ name: 'id', type: String })
+  async unLikeAnswer(
+    @Req() req,
+    @Res() res,
+    @Param('id') answerId,
+  ){
+    const user = req.user;
+    return this.actionsService.unLikeAnswer(user.id, answerId)
+      .then((data) => res.json(data))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
+  }
+
+  @Post('record/:id/unlike')
+  @ApiParam({ name: 'id', type: String })
+  async unLikeRecord(
+    @Req() req,
+    @Res() res,
+    @Param('id') recordId,
+  ){
+    const user = req.user;
+    return this.actionsService.unLikeRecord(user.id, recordId)
+      .then((data) => res.json(data))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
 
@@ -77,7 +104,7 @@ export class ActionsController {
     const user = req.user;
     return this.actionsService.addFriend(user.id, id)
       .then((data) => res.json(data))
-      .catch((e) => res.sendStatus(400))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
   @Delete('fiend')
@@ -90,7 +117,7 @@ export class ActionsController {
     const user = req.user;
     return this.actionsService.removeFriend(user.id, id)
       .then((data) => res.json(data))
-      .catch((e) => res.sendStatus(400))
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
   @Get('countries')

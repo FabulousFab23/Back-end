@@ -4,7 +4,6 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersEntity } from "../entities/users.entity";
 import { RefreshTokenEntity } from "../entities/token.entity";
-import { FileService } from "../files/file.service";
 import { PublicFileEntity } from "../entities/public-file.entity";
 
 @Module({
@@ -16,7 +15,7 @@ import { PublicFileEntity } from "../entities/public-file.entity";
         PublicFileEntity
       ])
   ],
-  providers: [UsersService, FileService],
+  providers: [UsersService],
   controllers: [UsersController]
 })
 export class UsersModule {}

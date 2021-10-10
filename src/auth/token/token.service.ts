@@ -69,7 +69,6 @@ export class TokenService {
     const token: any = {
       id: payload.sub,
       pseudo: payload.pseudo,
-      role: payload.role,
       accessToken: signedPayload,
       expiresIn: expires
     };
@@ -126,7 +125,6 @@ export class TokenService {
       return {
         id: payload.sub,
         pseudo: payload.pseudo,
-        role: payload.role
       };
     }
     return null;

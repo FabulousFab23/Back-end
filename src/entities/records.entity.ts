@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   Column,
   CreateDateColumn,
   Entity,
@@ -12,6 +13,8 @@ import { PublicFileEntity } from "./public-file.entity";
 import { UsersEntity } from "./users.entity";
 import { AnswersEntity } from "./answers.entity";
 import { LikesEntity } from "./llikes.entity";
+import { NotificationsEntity } from "./notification.entity";
+import { ConfigService } from "nestjs-config";
 
 
 @Entity({ name: "records" })
@@ -26,7 +29,7 @@ export class RecordsEntity {
   emoji: string;
 
   @Column({ nullable: true })
-  duration: number;
+  duration: string;
 
   @Column({ nullable: true , default: 0})
   likesCount: number
@@ -48,8 +51,18 @@ export class RecordsEntity {
   user: UsersEntity;
 
   @OneToMany(type => AnswersEntity, answers => answers.record)
-  answers: AnswersEntity;
+  answers: AnswersEntity[];
 
   @OneToMany(type => LikesEntity, likes => likes.record)
   likes: LikesEntity[];
+
+  @OneToMany(type => NotificationsEntity, notifications => notifications.record)
+  notifications: NotificationsEntity[];
+
+  @AfterLoad()
+  domainUrl() {
+    if (this.file) {
+      this.file.link = `${ConfigService.get('app.domain')}/files/${this.file.link}?auto=compress&q=20`;
+    }
+  }
 }

@@ -10,6 +10,7 @@ import { AccountModule } from './account/account.module';
 import { RecordsModule } from './records/records.module';
 import { FriendsModule } from './friends/friends.module';
 import { ActionsModule } from './actions/actions.module';
+import { NotificationsModule } from './notifications/notifications.module';
 @Module({
   imports: [
     ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
@@ -47,6 +48,7 @@ import { ActionsModule } from './actions/actions.module';
     RecordsModule,
     FriendsModule,
     ActionsModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],

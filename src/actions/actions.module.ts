@@ -10,6 +10,7 @@ import { PublicFileEntity } from "../entities/public-file.entity";
 import { UsersEntity } from "../entities/users.entity";
 import { FriendsEntity } from "../entities/friends.entity";
 import { CountryEntity } from "../entities/countries.entity";
+import { RecordsService } from "../records/records.service";
 
 @Module({
   imports: [

@@ -9,6 +9,7 @@ import { PublicFileEntity } from "../entities/public-file.entity";
 import { UsersEntity } from "../entities/users.entity";
 import { AnswersEntity } from "../entities/answers.entity";
 import { LikesEntity } from "../entities/llikes.entity";
+import { FriendsEntity } from "../entities/friends.entity";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LikesEntity } from "../entities/llikes.entity";
         UsersEntity,
         AnswersEntity,
         LikesEntity,
+        FriendsEntity,
       ])
   ],
   providers: [RecordsService, FileService, UsersService],

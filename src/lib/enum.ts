@@ -14,3 +14,16 @@ export enum FriendsStatusEnum {
   PENDING = 'pending',
   CANCELED = 'canceled',
 }
+
+export enum NotificationTypeEnum {
+  LIKE_RECORD = 'likeRecord',
+  LIKE_ANSWER = 'likeAnswer',
+  FRIEND_REQUEST = 'friendRequest',
+  FRIEND_ACCEPT = 'friendAccept',
+  NEW_ANSWER = 'newAnswer'
+}
+
+export enum FileTypeEnum {
+  AUDIO = 'audio',
+  IMAGE = 'image',
+}
