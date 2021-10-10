@@ -62,7 +62,7 @@ export class RecordsEntity {
   @AfterLoad()
   domainUrl() {
     if (this.file) {
-      this.file.link = `${ConfigService.get('app.domain')}/files/${this.file.link}?auto=compress&q=20`;
+      this.file.link = `${ConfigService.get('app.domain')}/files/${this.file.link}`;
     }
   }
 }
