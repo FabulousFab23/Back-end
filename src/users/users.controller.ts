@@ -1,39 +1,20 @@
 import {
-  Body,
   Controller,
   Get,
-  HttpStatus,
-  Param,
-  Post, Query,
+  Logger,
+  Query,
   Req,
   Res,
-  UploadedFile,
-  UseInterceptors
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { FileDto } from "./dto/file.dto";
+import { ApiBearerAuth, ApiQuery, ApiTags } from "@nestjs/swagger";
 
 @Controller("users")
 @ApiBearerAuth()
 @ApiTags("users")
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
   constructor(private usersService: UsersService) {
-  }
-
-  @Post("avatar")
-  @ApiConsumes("multipart/form-data")
-  @ApiResponse({ status: HttpStatus.CREATED, description: "The file has been uploaded" })
-  @ApiOperation({ description: "field name: \"file\" | max item size: 20mb | file extension: jpg|jpeg|png|gif" })
-  @ApiOperation({ summary: "roles: webmaster" })
-  @UseInterceptors(FileInterceptor("file"))
-  async addAvatar(
-    @Req() request,
-    @UploadedFile() file,
-    @Body() body: FileDto
-  ) {
-    return this.usersService.addAvatar(request.user.id, file.buffer, file.originalname);
   }
 
   @Get("search")
@@ -45,7 +26,7 @@ export class UsersController {
   ) {
     return this.usersService.findUserByPseudo(pseudo)
       .then((data) => res.json(data))
-      .catch((e) => res.sendStatus(400));
+      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
 }

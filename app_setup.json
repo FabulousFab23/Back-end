@@ -2,6 +2,8 @@
   "app": {
     "host": "127.0.0.1",
     "port": 4000,
+    "domain": "http://127.0.0.1:4000",
+    "domain_description": "part of links files in database",
     "backend_api_prefix": "",
     "backend_api_prefix_description": "sets global prefix for all endpoints, example: ip:port/prefix/endpointName,  leave empty for ip:port/endpointName",
     "access_token_ttl": 9000,

@@ -4,6 +4,7 @@ const config = JSON.parse(fs.readFileSync("app_setup.json", "utf8"));
 export default {
     host: config.app.host,
     port: config.app.port,
+    domain: config.app.domain,
     backend_api_prefix: config.app.backend_api_prefix,
     access_token_ttl: config.app.access_token_ttl,
     refresh_token_ttl: config.app.refresh_token_ttl,

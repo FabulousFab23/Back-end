@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
-  JoinColumn, OneToMany
+  JoinColumn, OneToMany, AfterLoad
 } from "typeorm";
 import { PublicFileEntity } from "./public-file.entity";
 import { RecordsEntity } from "./records.entity";
@@ -14,7 +14,8 @@ import { AnswersEntity } from "./answers.entity";
 import { LikesEntity } from "./llikes.entity";
 import { GenderEnum } from "../lib/enum";
 import { FriendsEntity } from "./friends.entity";
-
+import { NotificationsEntity } from "./notification.entity";
+import { ConfigService } from "nestjs-config";
 
 @Entity({ name: "users" })
 @Index(["email"])
@@ -96,4 +97,16 @@ export class UsersEntity {
   @OneToMany(type => FriendsEntity, to => to.user)
   to: FriendsEntity;
 
+  @OneToMany(type => NotificationsEntity, notificationsTo => notificationsTo.toUser)
+  notificationsTo: NotificationsEntity;
+
+  @OneToMany(type => NotificationsEntity, notificationsFrom => notificationsFrom.fromUser)
+  notificationsFrom: NotificationsEntity;
+
+  @AfterLoad()
+  domainUrl() {
+    if (this.avatar) {
+      this.avatar.link = `${ConfigService.get('app.domain')}/img/${this.avatar.link}?auto=compress&q=20`;
+    }
+  }
 }

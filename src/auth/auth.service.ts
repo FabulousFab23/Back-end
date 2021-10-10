@@ -37,7 +37,6 @@ export class AuthService {
     const payload: any = {
       username: user.username,
       sub: user.id,
-      role: user.role
     };
     const loginResponse: LoginResponse = await this.tokenService.createAccessToken(payload);
     const tokenContent = { userId: user.id, ipAddress };

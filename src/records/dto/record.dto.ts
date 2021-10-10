@@ -8,8 +8,8 @@ export class RecordDto {
   @ApiModelProperty({ type: 'string', example: '😎'})
   emoji: string;
 
-  @ApiModelProperty({ type: 'number', example: 45})
-  duration: number;
+  @ApiModelProperty({ type: 'string', example: 45})
+  duration: string;
 
   @ApiModelProperty({ type: 'string', format: 'binary', required: true })
   file: any;

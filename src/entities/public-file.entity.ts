@@ -1,6 +1,7 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RecordsEntity } from "./records.entity";
 import { AnswersEntity } from "./answers.entity";
+import { FileTypeEnum } from "../lib/enum";
 
 @Entity({ name: "s3_files" })
 export class PublicFileEntity {
@@ -10,6 +11,13 @@ export class PublicFileEntity {
 
   @Column()
   url: string;
+
+  @Column({
+    nullable: true,
+    type: 'enum',
+    enum: FileTypeEnum,
+  })
+  type: FileTypeEnum;
 
   @Column({ default: null })
   link: string;

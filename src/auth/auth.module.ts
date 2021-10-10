@@ -76,6 +76,14 @@ export class AuthModule implements NestModule {
           path: 'recover?token=(.*)',
           method: RequestMethod.POST,
         },
+        {
+          path: 'files/(.*)',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'img/(.*)',
+          method: RequestMethod.GET,
+        },
       )
       .forRoutes(
         AuthController,
