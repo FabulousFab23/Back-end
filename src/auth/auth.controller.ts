@@ -26,6 +26,7 @@ import { LoginRequest } from "./dto/login.request";
 @ApiTags("auth")
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
+
   constructor(
     private authService: AuthService,
     private mailService: MailService,
@@ -34,8 +35,8 @@ export class AuthController {
   }
 
   @Post("register")
-  @ApiResponse({status: HttpStatus.CREATED, description: "User data with jwt token", type: LoginResponse})
-  @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: "Unauthorized" })
+  @ApiResponse({ status: HttpStatus.CREATED, description: "User data with jwt token", type: LoginResponse })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: "Unauthorized" })
   async register(
     @Req() req,
     @Res() res,
@@ -48,8 +49,8 @@ export class AuthController {
   }
 
   @Post("login")
-  @ApiResponse({status: HttpStatus.CREATED, description: "User data with jwt token", type: LoginResponse})
-  @ApiResponse({status: HttpStatus.UNAUTHORIZED, description: "Unauthorized" })
+  @ApiResponse({ status: HttpStatus.CREATED, description: "User data with jwt token", type: LoginResponse })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: "Unauthorized" })
   async login(
     @Req() req,
     @Res() res,
@@ -62,18 +63,18 @@ export class AuthController {
       .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
-  @Put('refresh')
+  @Put("refresh")
   @ApiBearerAuth()
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'User data with jwt token', type: LoginResponse })
-  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
-  @ApiHeader({ name: 'refresh-token', required: true })
-  @ApiOperation({ description: 'Get a refresh token' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: "User data with jwt token", type: LoginResponse })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: "Unauthorized" })
+  @ApiHeader({ name: "refresh-token", required: true })
+  @ApiOperation({ description: "Get a refresh token" })
   async token(
-    @Headers('refresh-token') refreshToken: string,
+    @Headers("refresh-token") refreshToken: string,
     @Req() req,
-    @Res() res,
+    @Res() res
   ): Promise<LoginResponse> {
-    const reqIp = req.headers['x-real-ip'] || req.connection.remoteAddress;
+    const reqIp = req.headers["x-real-ip"] || req.connection.remoteAddress;
     const oldAccessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
     return await this.tokenService.getAccessTokenFromRefreshToken(refreshToken, oldAccessToken, reqIp)
       .then((data) => res.json(data))
@@ -82,7 +83,7 @@ export class AuthController {
 
 
   @Post("forgot-password")
-  @ApiResponse({status: HttpStatus.OK, description: "Recovery message has been sent"})
+  @ApiResponse({ status: HttpStatus.OK, description: "Recovery message has been sent" })
   async recoverPass(
     @Res() res,
     @Body() request: ForgotPassRequest,
@@ -108,7 +109,7 @@ export class AuthController {
   @ApiQuery({ name: "token", type: String, required: true })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Wrong token" })
   @ApiResponse({ status: HttpStatus.OK, description: "User data", type: RecoverRequest })
-  @ApiOperation({summary: 'public endpoint'})
+  @ApiOperation({ summary: "public endpoint" })
   async getRecoverData(
     @Res() res,
     @Query("token") token: string
@@ -151,7 +152,7 @@ export class AuthController {
   ) {
     const user = req.user;
     return this.authService.logout(user, refreshToken)
-      .then(() => res.status(HttpStatus.NO_CONTENT).send('ok'))
+      .then(() => res.status(HttpStatus.NO_CONTENT).send("ok"))
       .catch((error) => res.status(error.statusCode).send(error.response));
   }
 
@@ -163,7 +164,7 @@ export class AuthController {
   ) {
     const user = req.user;
     return this.authService.logoutFromAll(user.id)
-      .then(() => res.status(HttpStatus.NO_CONTENT).send('ok'))
+      .then(() => res.status(HttpStatus.NO_CONTENT).send("ok"))
       .catch((error) => res.status(error.statusCode).send(error.response));
   }
 }

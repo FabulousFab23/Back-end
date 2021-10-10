@@ -34,9 +34,6 @@ export class AccountService {
 
   async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
     const findUser = await this.usersService.getById(userId);
-    if(!findUser) {
-      throw new NotFoundException();
-    }
     const avatar = await this.fileService.uploadFile(imageBuffer, filename, FileTypeEnum.IMAGE);
     await this.usersService.updateAvatar(userId, {
       ...findUser,

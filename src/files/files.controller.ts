@@ -16,9 +16,7 @@ export class FilesController {
     @Res() res
   ) {
     const file = await this.filesService.getPrivateFile(id);
-    res.writeHead(200, {
-      "Content-Type": "audio/mpeg"
-    });
+    res.writeHead(200, { "Content-Type": "audio/mpeg" });
     return file.stream.pipe(res);
   }
 
@@ -29,9 +27,7 @@ export class FilesController {
     @Res() res
   ) {
     const file = await this.filesService.getPrivateFile(id);
-    res.writeHead(200, {
-      "Content-Type": "image/jpeg"
-    });
+    res.writeHead(200, { "Content-Type": "image/jpeg" });
     return file.stream.pipe(res);
   }
 }

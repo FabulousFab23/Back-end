@@ -24,22 +24,22 @@ export class ActionsService {
   }
 
   async answerToRecord(user, record, duration, buffer, filename) {
-    const findRecord = await this.recordsRepository.createQueryBuilder('record')
+    const findRecord = await this.recordsRepository.createQueryBuilder("record")
       .where({ id: record })
-      .leftJoin('record.answers', 'answers')
-      .leftJoin('answers.user', 'user')
+      .leftJoin("record.answers", "answers")
+      .leftJoin("answers.user", "user")
       .select([
-        'record.id',
-        'answers.id',
-        'user.id',
+        "record.id",
+        "answers.id",
+        "user.id"
       ])
-      .getOne()
+      .getOne();
     if (!findRecord) {
-      throw new NotFoundException();
+      throw new NotFoundException("record not found");
     }
-    const userAnswers = findRecord.answers.filter((el) => el.user.id === user.id)
+    const userAnswers = findRecord.answers.filter((el) => el.user.id === user.id);
     if (userAnswers.length) {
-      throw new BadRequestException('you already answered')
+      throw new BadRequestException("you already answered");
     }
     const uploadFile = await this.filesService.uploadFile(buffer, filename, FileTypeEnum.AUDIO);
     const entity = new AnswersEntity();
@@ -71,7 +71,7 @@ export class ActionsService {
     like.user = await this.usersRepository.findOne({ where: { id: userId } });
     like.record = record;
     like.type = LikeTypeEnum.RECORD;
-    await this.recordsRepository.update(record.id, {likesCount: record.likesCount + 1 })
+    await this.recordsRepository.update(record.id, { likesCount: record.likesCount + 1 });
     await this.likesRepository
       .createQueryBuilder()
       .insert()
@@ -84,7 +84,7 @@ export class ActionsService {
   async likeAnswer(userId: string, answerId: string) {
     const answer = await this.answersRepository.findOne({ where: { id: answerId } });
     if (!answer) {
-      throw new NotFoundException();
+      throw new NotFoundException("answer not found");
     }
 
     const existingLike = await this.likesRepository.findOne({
@@ -101,7 +101,7 @@ export class ActionsService {
     like.user = await this.usersRepository.findOne({ where: { id: userId } });
     like.answer = answer;
     like.type = LikeTypeEnum.ANSWER;
-    await this.answersRepository.update(answer.id, {likesCount: answer.likesCount + 1 })
+    await this.answersRepository.update(answer.id, { likesCount: answer.likesCount + 1 });
     await this.likesRepository
       .createQueryBuilder()
       .insert()
@@ -114,7 +114,7 @@ export class ActionsService {
   async unLikeRecord(userId: string, recordId: string) {
     const record = await this.recordsRepository.findOne({ where: { id: recordId } });
     if (!record) {
-      throw new NotFoundException();
+      throw new NotFoundException("record not found");
     }
 
     const existingLike = await this.likesRepository.findOne({
@@ -127,14 +127,14 @@ export class ActionsService {
     if (!existingLike) {
       throw new BadRequestException("like not found");
     }
-    await this.recordsRepository.update(record.id, {likesCount: record.likesCount - 1 })
-    return this.likesRepository.delete(existingLike.id)
+    await this.recordsRepository.update(record.id, { likesCount: record.likesCount - 1 });
+    return this.likesRepository.delete(existingLike.id);
   }
 
   async unLikeAnswer(userId: string, answerId: string) {
     const answer = await this.answersRepository.findOne({ where: { id: answerId } });
     if (!answer) {
-      throw new NotFoundException();
+      throw new NotFoundException("answer not found");
     }
 
     const existingLike = await this.likesRepository.findOne({
@@ -147,8 +147,8 @@ export class ActionsService {
     if (!existingLike) {
       throw new BadRequestException("like not found");
     }
-    await this.answersRepository.update(answer.id, {likesCount: answer.likesCount - 1 })
-    return this.likesRepository.delete(existingLike.id)
+    await this.answersRepository.update(answer.id, { likesCount: answer.likesCount - 1 });
+    return this.likesRepository.delete(existingLike.id);
   }
 
   async addFriend(userId, friendId) {
@@ -180,7 +180,7 @@ export class ActionsService {
   }
 
   async getAllCountries() {
-    return this.countriesRepository.find()
+    return this.countriesRepository.find();
   }
 
 }
