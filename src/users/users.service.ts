@@ -13,16 +13,16 @@ export class UsersService {
 
   /*for auth*/
   findOneByEmail(email: string): Promise<UsersEntity> {
-    return this.usersRepository.findOne({
-      where: { email },
-      select: [
-        "id",
-        "email",
-        "pseudo",
-        "password",
-        "lastActivity"
-      ]
-    });
+    return this.usersRepository.createQueryBuilder('user')
+      .where( 'user.email ilike :email', { email })
+      .select( [
+        "user.id",
+        "user.email",
+        "user.pseudo",
+        "user.password",
+        "user.lastActivity",
+      ])
+      .getOne()
   }
 
   findOneByIdForPayload(id: string): Promise<UsersEntity> { // for refresh

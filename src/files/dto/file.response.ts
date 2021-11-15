@@ -1,5 +1,4 @@
 import { ApiModelProperty } from "@nestjs/swagger/dist/decorators/api-model-property.decorator";
-import { FileTypeEnum } from "../../lib/enum";
 
 export class FileResponse {
   @ApiModelProperty({ type: "string", example: "0f6e280e-44cd-42de-a627-83876e6fb772" })
@@ -12,7 +11,8 @@ export class FileResponse {
   })
   url: string;
 
-  @ApiModelProperty({ type: FileTypeEnum })
+  // @ApiModelProperty({ type: FileTypeEnum })
+  @ApiModelProperty()
   type: string;
 
   @ApiModelProperty({

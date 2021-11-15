@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, IsDateString, Max, MaxLength, Min, MinLength } from "class-validator";
 import { GenderEnum } from "../../lib/enum";
+import { ApiModelProperty } from "@nestjs/swagger/dist/decorators/api-model-property.decorator";
 
 export class CompleteRegisterDto {
 
@@ -16,6 +17,6 @@ export class CompleteRegisterDto {
   @ApiProperty({example: 'Ukraine'})
   country: string;
 
-  @ApiProperty({ enum: GenderEnum })
-  gender: GenderEnum;
+  @ApiProperty()
+  gender: string;
 }

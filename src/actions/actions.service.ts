@@ -26,20 +26,10 @@ export class ActionsService {
   async answerToRecord(user, record, duration, buffer, filename) {
     const findRecord = await this.recordsRepository.createQueryBuilder("record")
       .where({ id: record })
-      .leftJoin("record.answers", "answers")
-      .leftJoin("answers.user", "user")
-      .select([
-        "record.id",
-        "answers.id",
-        "user.id"
-      ])
+      .select(["record.id"])
       .getOne();
     if (!findRecord) {
       throw new NotFoundException("record not found");
-    }
-    const userAnswers = findRecord.answers.filter((el) => el.user.id === user.id);
-    if (userAnswers.length) {
-      throw new BadRequestException("you already answered");
     }
     const uploadFile = await this.filesService.uploadFile(buffer, filename, FileTypeEnum.AUDIO);
     const entity = new AnswersEntity();
@@ -51,7 +41,7 @@ export class ActionsService {
     return this.answersRepository.save(entity);
   }
 
-  async likeRecord(userId: string, recordId: string) {
+  async likeRecord(userId: string, recordId: string, body) {
     const record = await this.recordsRepository.findOne({ where: { id: recordId } });
     if (!record) {
       throw new NotFoundException();
@@ -65,13 +55,13 @@ export class ActionsService {
       }
     );
     if (existingLike) {
-      throw new BadRequestException("like exist");
+      return this.recordsRepository.update(record.id, { likesCount: record.likesCount + body.count });
     }
     const like = new LikesEntity();
     like.user = await this.usersRepository.findOne({ where: { id: userId } });
     like.record = record;
     like.type = LikeTypeEnum.RECORD;
-    await this.recordsRepository.update(record.id, { likesCount: record.likesCount + 1 });
+    await this.recordsRepository.update(record.id, { likesCount: record.likesCount + body.count });
     await this.likesRepository
       .createQueryBuilder()
       .insert()
@@ -81,7 +71,7 @@ export class ActionsService {
     return like;
   }
 
-  async likeAnswer(userId: string, answerId: string) {
+  async likeAnswer(userId: string, answerId: string, body) {
     const answer = await this.answersRepository.findOne({ where: { id: answerId } });
     if (!answer) {
       throw new NotFoundException("answer not found");
@@ -95,13 +85,13 @@ export class ActionsService {
       }
     );
     if (existingLike) {
-      throw new BadRequestException("like exist");
+      await this.answersRepository.update(answer.id, { likesCount: answer.likesCount + body.count });
     }
     const like = new LikesEntity();
     like.user = await this.usersRepository.findOne({ where: { id: userId } });
     like.answer = answer;
     like.type = LikeTypeEnum.ANSWER;
-    await this.answersRepository.update(answer.id, { likesCount: answer.likesCount + 1 });
+    await this.answersRepository.update(answer.id, { likesCount: answer.likesCount + body.count });
     await this.likesRepository
       .createQueryBuilder()
       .insert()

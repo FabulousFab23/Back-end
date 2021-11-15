@@ -1,6 +1,7 @@
 import { ApiModelProperty } from "@nestjs/swagger/dist/decorators/api-model-property.decorator";
 import { GenderEnum } from "../../lib/enum";
 import { FileResponse } from "../../files/dto/file.response";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class UsersResponse {
 
@@ -28,8 +29,8 @@ export class UsersResponse {
   @ApiModelProperty({ example: false })
   isEmailVerified: boolean;
 
-  @ApiModelProperty({ type: GenderEnum })
-  gender: GenderEnum;
+  @ApiProperty()
+  gender: string;
 
   @ApiModelProperty({ example: 'Ukraine'})
   country: string;

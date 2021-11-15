@@ -22,6 +22,7 @@ import {
 } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FileDto } from "../users/dto/file.dto";
+import { LikesRequestDto } from "./dto/likes.request.dto";
 
 @Controller("actions")
 @ApiBearerAuth()
@@ -58,10 +59,11 @@ export class ActionsController {
   async likeAnswer(
     @Req() req,
     @Res() res,
+    @Body() body: LikesRequestDto,
     @Param("id") answerId: string,
   ) {
     const user = req.user;
-    return this.actionsService.likeAnswer(user.id, answerId)
+    return this.actionsService.likeAnswer(user.id, answerId, body)
       .then((data) => res.json(data))
       .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
@@ -73,43 +75,44 @@ export class ActionsController {
   async likeRecord(
     @Req() req,
     @Res() res,
+    @Body() body: LikesRequestDto,
     @Param("id") recordId: string
   ) {
     const user = req.user;
-    return this.actionsService.likeRecord(user.id, recordId)
+    return this.actionsService.likeRecord(user.id, recordId, body)
       .then((data) => res.json(data))
       .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
   }
 
-  @Post("answer/:id/unlike")
-  @ApiNotFoundResponse({ status: HttpStatus.NOT_FOUND, description: "answer not found" })
-  @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: "like not found" })
-  @ApiParam({ name: "id", type: String, required: true })
-  async unLikeAnswer(
-    @Req() req,
-    @Res() res,
-    @Param("id") answerId
-  ) {
-    const user = req.user;
-    return this.actionsService.unLikeAnswer(user.id, answerId)
-      .then((data) => res.json(data))
-      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
-  }
+  // @Post("answer/:id/unlike")
+  // @ApiNotFoundResponse({ status: HttpStatus.NOT_FOUND, description: "answer not found" })
+  // @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: "like not found" })
+  // @ApiParam({ name: "id", type: String, required: true })
+  // async unLikeAnswer(
+  //   @Req() req,
+  //   @Res() res,
+  //   @Param("id") answerId
+  // ) {
+  //   const user = req.user;
+  //   return this.actionsService.unLikeAnswer(user.id, answerId)
+  //     .then((data) => res.json(data))
+  //     .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
+  // }
 
-  @Post("record/:id/unlike")
-  @ApiNotFoundResponse({ status: HttpStatus.NOT_FOUND, description: "record not found" })
-  @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: "like not found" })
-  @ApiParam({ name: "id", type: String, required: true })
-  async unLikeRecord(
-    @Req() req,
-    @Res() res,
-    @Param("id") recordId
-  ) {
-    const user = req.user;
-    return this.actionsService.unLikeRecord(user.id, recordId)
-      .then((data) => res.json(data))
-      .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
-  }
+  // @Post("record/:id/unlike")
+  // @ApiNotFoundResponse({ status: HttpStatus.NOT_FOUND, description: "record not found" })
+  // @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST, description: "like not found" })
+  // @ApiParam({ name: "id", type: String, required: true })
+  // async unLikeRecord(
+  //   @Req() req,
+  //   @Res() res,
+  //   @Param("id") recordId
+  // ) {
+  //   const user = req.user;
+  //   return this.actionsService.unLikeRecord(user.id, recordId)
+  //     .then((data) => res.json(data))
+  //     .catch(err => !err.status ? this.logger.error(err) : res.status(err.status).send(err.response));
+  // }
 
 
   @Post("fiend")
